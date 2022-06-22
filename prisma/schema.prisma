@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://tdm:tdm@localhost:3306/tdm_project"
+}
+
+model Compte {
+  idCompte         Int     @id @default(autoincrement())
+  email            String  @unique
+  nom              String?
+  prenom           String?
+  numDelephone     String?
+  motDePasse       String?
+  motDePasseCompte String?
+  Noter            Noter[]
+  Avoir            Avoir[]
+}
+
+model Noter {
+  idNote           Int      @id @default(autoincrement())
+  note             Int
+  commentaire      String?
+  compte           Compte?  @relation(fields: [compteIdCompte], references: [idCompte])
+  parking          Parking? @relation(fields: [parkingIdParking], references: [idParking])
+  compteIdCompte   Int?
+  parkingIdParking Int?
+}
+
+model Parking {
+  idParking      Int        @id @default(autoincrement())
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  nomParking     String
+  photo          String?
+  commune        String?
+  tauxOccupation Float
+  tarifHeure     Int
+  adresseParking String?
+  nombrePlaceMax Int?
+  Noter          Noter[]
+  Avoir          Avoir[]
+  Associer       Associer[]
+}
+
+model Reservation {
+  numReservation  Int      @id @default(autoincrement())
+  dateReservation DateTime
+  heureEntre      String
+  heureSortie     String
+  numPlaceParking String
+  paye            Boolean
+  Avoir           Avoir[]
+  paiement Paiement?
+}
+
+model Paiement {
+    id Int @id @default(autoincrement())
+    reservation               Reservation @relation(fields: [idReservation], references: [numReservation])
+    idReservation Int
+
+}
+
+model Avoir {
+  id                        Int         @id
+  compte                    Compte      @relation(fields: [compteIdCompte], references: [idCompte])
+  reservation               Reservation @relation(fields: [reservationNumReservation], references: [numReservation])
+  parkig                    Parking     @relation(fields: [parkingIdParking], references: [idParking])
+  compteIdCompte            Int
+  reservationNumReservation Int
+  parkingIdParking          Int
+}
+
+model Horaire {
+  idHoraire        Int        @id @default(autoincrement())
+  horaireOuverture String
+  horaireFermeture String
+  jour             DateTime?
+  Associer         Associer[]
+}
+
+model Associer {
+  id               Int     @id
+  parking          Parking @relation(fields: [parkingIdParking], references: [idParking])
+  horaire          Horaire @relation(fields: [horaireIdHoraire], references: [idHoraire])
+  parkingIdParking Int
+  horaireIdHoraire Int
+}
