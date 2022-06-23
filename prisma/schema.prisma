@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = "mysql://tdm:tdm@localhost:3306/tdm_project"
+  provider = "postgresql" 
+  url      = "postgresql://postgres:AdministrateurAutotek2022*@localhost:5432/tdm_projet?schema=public"
 }
 
 model Compte {
@@ -12,8 +12,9 @@ model Compte {
   email            String  @unique
   nom              String?
   prenom           String?
-  numDelephone     String?
+  numTelephone     String?
   motDePasse       String?
+  numCompte        String?
   motDePasseCompte String?
   Noter            Noter[]
   Avoir            Avoir[]
@@ -36,13 +37,20 @@ model Parking {
   nomParking     String
   photo          String?
   commune        String?
-  tauxOccupation Float
   tarifHeure     Int
   adresseParking String?
   nombrePlaceMax Int?
   Noter          Noter[]
   Avoir          Avoir[]
   Associer       Associer[]
+  HistoriqueParking   HistoriqueParking[]
+}
+
+model HistoriqueParking {
+  idHistoriqueParking      Int        @id @default(autoincrement())
+  parkig                   Parking    @relation(fields: [parkingIdParking], references: [idParking])
+  nombrePlace              Int
+  parkingIdParking         Int
 }
 
 model Reservation {
@@ -60,11 +68,10 @@ model Paiement {
     id Int @id @default(autoincrement())
     reservation               Reservation @relation(fields: [idReservation], references: [numReservation])
     idReservation Int
-
 }
 
 model Avoir {
-  id                        Int         @id
+  id                        Int         @id @default(autoincrement())
   compte                    Compte      @relation(fields: [compteIdCompte], references: [idCompte])
   reservation               Reservation @relation(fields: [reservationNumReservation], references: [numReservation])
   parkig                    Parking     @relation(fields: [parkingIdParking], references: [idParking])
@@ -75,14 +82,14 @@ model Avoir {
 
 model Horaire {
   idHoraire        Int        @id @default(autoincrement())
-  horaireOuverture String
-  horaireFermeture String
-  jour             DateTime?
+  horaireOuverture DateTime
+  horaireFermeture DateTime
+  jour             String
   Associer         Associer[]
 }
 
 model Associer {
-  id               Int     @id
+  id               Int     @id @default(autoincrement())
   parking          Parking @relation(fields: [parkingIdParking], references: [idParking])
   horaire          Horaire @relation(fields: [horaireIdHoraire], references: [idHoraire])
   parkingIdParking Int

@@ -42,17 +42,31 @@ router.get('/:selector', function(req, res, next) {
     }
 });
 
+
 router.post('/', function(req, res, next) {
     try {
-        prisma.compte.create({
-            data: {
-                email: req.body.email,
-                numDelephone: req.body.numDelephone,
-                motDePasse: req.body.motDePasse,
-                motDePasseCompte: req.body.motDePasseCompte,
+        prisma.compte.findUnique({
+            where: {
+                email: req.body.email
             }
         }).then(users => {
-            res.json(users);
+            if(users==null){
+            prisma.compte.create({
+                data: {
+                    nom:req.body.nom,
+                    prenom:req.body.prenom,
+                    email: req.body.email,
+                    numTelephone: req.body.numTelephone,
+                    motDePasse: req.body.motDePasse
+                    
+                }
+            }).then(user =>{
+                res.json(user)})
+            
+        }
+        else{
+            res.json(users)
+        }
         })
     } catch (e) {
         console.log(e);
