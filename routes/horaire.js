@@ -6,7 +6,12 @@ const prisma = new PrismaClient()
 /* GET users listing. */
 router.get('/', function(req, res, next) {
     try {
-        prisma.horaire.findMany().then(users => {
+        prisma.horaire.findMany({
+            select: {
+                idHoraire: true,
+                jour: true,
+              },
+        }).then(users => {
             res.json(users);
         })
     } catch (e) {
