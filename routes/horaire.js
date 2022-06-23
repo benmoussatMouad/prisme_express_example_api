@@ -4,11 +4,14 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/:idParking', function(req, res, next) {
     try {
         prisma.associer.findMany({
             select:{
                 horaireIdHoraire:true
+            },
+            where: {
+                parkingIdParking: parseInt(req.params.idParking)
             }
         }).then(associer => {
             var temp = []
@@ -18,12 +21,23 @@ router.get('/', function(req, res, next) {
             }
             prisma.horaire.findMany({
                 where: {
-                    idHoraire: { in: temp },
+                    idHoraire: { in: temp }
                 }
             })
             .then(horaires => {
                 res.json(horaires);
             })
+        })
+    } catch (e) {
+        console.log(e);
+        res.status(502)
+    }
+});
+
+router.get('/', function(req, res, next) {
+    try {
+        prisma.horaire.findMany().then(users => {
+            res.json(users);
         })
     } catch (e) {
         console.log(e);
