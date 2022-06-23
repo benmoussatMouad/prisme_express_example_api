@@ -6,12 +6,7 @@ const prisma = new PrismaClient()
 /* GET users listing. */
 router.get('/', function(req, res, next) {
     try {
-        prisma.associer.findMany({
-            include: {
-                Parking: true,
-                Horaire: true
-            }
-        }).then(users => {
+        prisma.associer.findMany().then(users => {
             res.json(users);
         })
     } catch (e) {

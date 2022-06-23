@@ -6,13 +6,29 @@ const prisma = new PrismaClient()
 /* GET users listing. */
 router.get('/', function(req, res, next) {
     try {
-        prisma.horaire.findMany({
-            select: {
-                idHoraire: true,
-                jour: true,
-              },
-        }).then(users => {
-            res.json(users);
+        prisma.associer.findMany({
+            select:{
+                horaireIdHoraire:true
+            }
+        }).then(associer => {
+            var temp = []
+            for (let index = 0; index < associer.length; index++) {
+                temp[index] = (associer[index].horaireIdHoraire);
+                
+            }
+            prisma.horaire.findMany({
+                select:{
+                    idHoraire: true,
+                    horaireOuverture: 'HH:MI',
+                    jour: true
+                },
+                where: {
+                    idHoraire: { in: temp },
+                }
+            })
+            .then(horaires => {
+                res.json(horaires);
+            })
         })
     } catch (e) {
         console.log(e);

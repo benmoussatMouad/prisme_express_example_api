@@ -82,8 +82,8 @@ model Avoir {
 
 model Horaire {
   idHoraire        Int        @id @default(autoincrement())
-  horaireOuverture DateTime
-  horaireFermeture DateTime
+  horaireOuverture DateTime   @db.Time
+  horaireFermeture DateTime   @db.Time
   jour             String
   Associer         Associer[]
 }
