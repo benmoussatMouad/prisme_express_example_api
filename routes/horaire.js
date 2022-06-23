@@ -17,11 +17,6 @@ router.get('/', function(req, res, next) {
                 
             }
             prisma.horaire.findMany({
-                select:{
-                    idHoraire: true,
-                    horaireOuverture: 'HH:MI',
-                    jour: true
-                },
                 where: {
                     idHoraire: { in: temp },
                 }
