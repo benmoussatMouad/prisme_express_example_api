@@ -45,6 +45,27 @@ router.get('/', function(req, res, next) {
     }
 });
 
+router.get('/parkings/:jour', function(req, res, next) {
+    try {
+        prisma.horaire.findMany({
+            include:{
+                Associer: {
+                    select:{
+                        parkingIdParking:true
+                    }
+                },
+            },where: {
+                jour:req.params.jour
+            }
+        }).then(horaires => {
+            res.json(horaires);
+        })
+    } catch (e) {
+        console.log(e);
+        res.status(502)
+    }
+});
+
 router.get('/:id', function(req, res, next) {
     try {
         prisma.horaire.findUnique({

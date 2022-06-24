@@ -51,6 +51,7 @@ model HistoriqueParking {
   parkig                   Parking    @relation(fields: [parkingIdParking], references: [idParking])
   nombrePlace              Int
   parkingIdParking         Int
+  horaire                  DateTime
 }
 
 model Reservation {
