@@ -16,6 +16,8 @@ router.get('/', function(req, res, next) {
                     orderBy: {
                         idHistoriqueParking: 'desc',
                       }
+                },
+                Horaire:{
                 }
             }
         }).then(users => {

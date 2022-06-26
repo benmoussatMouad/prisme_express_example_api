@@ -39,10 +39,12 @@ model Parking {
   commune        String?
   tarifHeure     Int
   adresseParking String?
+  latitude       Decimal
+  longitude      Decimal
   nombrePlaceMax Int?
   Noter          Noter[]
   Avoir          Avoir[]
-  Associer       Associer[]
+  Horaire        Horaire[]
   HistoriqueParking   HistoriqueParking[]
 }
 
@@ -83,16 +85,9 @@ model Avoir {
 
 model Horaire {
   idHoraire        Int        @id @default(autoincrement())
+  parking          Parking @relation(fields: [parkingIdParking], references: [idParking])
+  parkingIdParking Int
   horaireOuverture DateTime   @db.Time
   horaireFermeture DateTime   @db.Time
   jour             String
-  Associer         Associer[]
-}
-
-model Associer {
-  id               Int     @id @default(autoincrement())
-  parking          Parking @relation(fields: [parkingIdParking], references: [idParking])
-  horaire          Horaire @relation(fields: [horaireIdHoraire], references: [idHoraire])
-  parkingIdParking Int
-  horaireIdHoraire Int
 }
