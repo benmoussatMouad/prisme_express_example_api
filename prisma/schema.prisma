@@ -3,91 +3,111 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" 
-  url      = "postgresql://postgres:AdministrateurAutotek2022*@localhost:5432/tdm_projet?schema=public"
+  provider = "mysql"
+  url      = "mysql://tdm:tdm@localhost:3306/tdm_project"
 }
 
 model Compte {
-  idCompte         Int     @id @default(autoincrement())
-  email            String  @unique
+  idCompte         Int           @id @default(autoincrement())
+  email            String        @unique
   nom              String?
   prenom           String?
   numTelephone     String?
   motDePasse       String?
   numCompte        String?
   motDePasseCompte String?
-  Noter            Noter[]
   Avoir            Avoir[]
+  Noter            Noter[]
+  Reservation      Reservation[]
 }
 
 model Noter {
   idNote           Int      @id @default(autoincrement())
   note             Decimal
   commentaire      String?
-  compte           Compte?  @relation(fields: [compteIdCompte], references: [idCompte])
-  parking          Parking? @relation(fields: [parkingIdParking], references: [idParking])
   compteIdCompte   Int?
   parkingIdParking Int?
+  compte           Compte?  @relation(fields: [compteIdCompte], references: [idCompte])
+  parking          Parking? @relation(fields: [parkingIdParking], references: [idParking])
+
+  @@index([compteIdCompte], map: "Noter_compteIdCompte_fkey")
+  @@index([parkingIdParking], map: "Noter_parkingIdParking_fkey")
 }
 
 model Parking {
-  idParking      Int        @id @default(autoincrement())
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  nomParking     String
-  photo          String?
-  commune        String?
-  tarifHeure     Int
-  adresseParking String?
-  latitude       Decimal
-  longitude      Decimal
-  nombrePlaceMax Int?
-  Noter          Noter[]
-  Avoir          Avoir[]
-  Horaire        Horaire[]
-  HistoriqueParking   HistoriqueParking[]
+  idParking         Int                 @id @default(autoincrement())
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  nomParking        String
+  photo             String?
+  commune           String?
+  tarifHeure        Int
+  adresseParking    String?
+  latitude          Decimal
+  longitude         Decimal
+  nombrePlaceMax    Int?
+  Avoir             Avoir[]
+  HistoriqueParking HistoriqueParking[]
+  Horaire           Horaire[]
+  Noter             Noter[]
+  Reservation       Reservation[]
 }
 
 model HistoriqueParking {
-  idHistoriqueParking      Int        @id @default(autoincrement())
-  parkig                   Parking    @relation(fields: [parkingIdParking], references: [idParking])
-  nombrePlace              Int
-  parkingIdParking         Int
-  horaire                  DateTime
+  idHistoriqueParking Int      @id @default(autoincrement())
+  nombrePlace         Int
+  parkingIdParking    Int
+  horaire             DateTime
+  parkig              Parking  @relation(fields: [parkingIdParking], references: [idParking])
+
+  @@index([parkingIdParking], map: "HistoriqueParking_parkingIdParking_fkey")
 }
 
 model Reservation {
-  numReservation  Int      @id @default(autoincrement())
+  numReservation  Int       @id @default(autoincrement())
   dateReservation DateTime
   heureEntre      String
   heureSortie     String
   numPlaceParking String
   paye            Boolean
+  idParking       Int?
+  idCompte        Int?
+  Compte          Compte?   @relation(fields: [idCompte], references: [idCompte], onDelete: Restrict, onUpdate: Restrict, map: "Reservation_Compte_idCompte_fk")
+  Parking         Parking?  @relation(fields: [idParking], references: [idParking], onDelete: Restrict, onUpdate: Restrict, map: "Reservation_Parking_idParking_fk")
   Avoir           Avoir[]
-  paiement Paiement?
+  paiement        Paiement?
+
+  @@index([idParking], map: "Reservation_Parking_idParking_fk")
+  @@index([idCompte], map: "Reservation_Compte_idCompte_fk")
 }
 
 model Paiement {
-    id Int @id @default(autoincrement())
-    reservation               Reservation @relation(fields: [idReservation], references: [numReservation])
-    idReservation Int
+  id            Int         @id @default(autoincrement())
+  idReservation Int         @unique
+  reservation   Reservation @relation(fields: [idReservation], references: [numReservation])
 }
 
 model Avoir {
   id                        Int         @id @default(autoincrement())
-  compte                    Compte      @relation(fields: [compteIdCompte], references: [idCompte])
-  reservation               Reservation @relation(fields: [reservationNumReservation], references: [numReservation])
-  parkig                    Parking     @relation(fields: [parkingIdParking], references: [idParking])
   compteIdCompte            Int
   reservationNumReservation Int
   parkingIdParking          Int
+  compte                    Compte      @relation(fields: [compteIdCompte], references: [idCompte])
+  parkig                    Parking     @relation(fields: [parkingIdParking], references: [idParking])
+  reservation               Reservation @relation(fields: [reservationNumReservation], references: [numReservation])
+
+  @@index([compteIdCompte], map: "Avoir_compteIdCompte_fkey")
+  @@index([parkingIdParking], map: "Avoir_parkingIdParking_fkey")
+  @@index([reservationNumReservation], map: "Avoir_reservationNumReservation_fkey")
 }
 
 model Horaire {
-  idHoraire        Int        @id @default(autoincrement())
-  parking          Parking @relation(fields: [parkingIdParking], references: [idParking])
+  idHoraire        Int      @id @default(autoincrement())
   parkingIdParking Int
-  horaireOuverture DateTime   @db.Time
-  horaireFermeture DateTime   @db.Time
+  horaireOuverture DateTime @db.Time(0)
+  horaireFermeture DateTime @db.Time(0)
   jour             String
+  parking          Parking  @relation(fields: [parkingIdParking], references: [idParking])
+
+  @@index([parkingIdParking], map: "Horaire_parkingIdParking_fkey")
 }
