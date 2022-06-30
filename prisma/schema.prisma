@@ -22,7 +22,7 @@ model Compte {
 
 model Noter {
   idNote           Int      @id @default(autoincrement())
-  note             Int
+  note             Decimal
   commentaire      String?
   compte           Compte?  @relation(fields: [compteIdCompte], references: [idCompte])
   parking          Parking? @relation(fields: [parkingIdParking], references: [idParking])
