@@ -11,7 +11,6 @@ var reservationRouter = require('./routes/reservation');
 var horaireRouter = require('./routes/horaire');
 var associerRouter = require('./routes/Associer');
 var avoirRouter = require('./routes/avoir');
-var noterRouter = require('./routes/noter')
 var historiqueParkingRouter = require('./routes/historiqueParking');
 
 var app = express();
@@ -33,7 +32,6 @@ app.use('/horaire', horaireRouter)
 app.use('/reservation', reservationRouter)
 app.use('/associer', associerRouter)
 app.use('/avoir', avoirRouter)
-app.use('/noter', noterRouter)
 app.use('/historiqueParking', historiqueParkingRouter)
 
 // catch 404 and forward to error handler

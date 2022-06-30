@@ -45,8 +45,8 @@ router.post('/', function(req, res, next) {
             data: {
                 note: req.body.note,
                 commentaire: req.body.commentaire,
-                compteIdCompte: req.body.compteIdCompte,
-                parkingIdParking: req.body.parkingIdParking
+                compteIdCompte: req.body.idCompte,
+                parkingIdParking: req.body.idParking
 
             }
         }).then(users => {
