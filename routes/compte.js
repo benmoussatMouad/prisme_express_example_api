@@ -65,7 +65,7 @@ router.post('/', function(req, res, next) {
             
         }
         else{
-            res.json(users)
+            res.json(null)
         }
         })
     } catch (e) {
