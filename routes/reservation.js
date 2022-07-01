@@ -15,15 +15,27 @@ router.get('/', function(req, res, next) {
   }
 });
 
-router.get('/:id', function(req, res, next) {
+router.get('/:selector', function(req, res, next) {
   try {
-    prisma.reservaion.findUnique({
-      where: {
-        numReservation: req.params.id
-      }
-    }).then(users => {
-      res.json(users);
-    })
+    if (req.query.type == "id")
+    {
+        prisma.reservation.findUnique({
+        where: {
+          numReservation: req.params.selector
+        }}
+      ).then(users => {
+        res.json(users);
+      })
+    }
+    if (req.query.type == "parking") {
+      prisma.reservation.findMany({
+        where: {
+          idParking: parseInt(req.params.selector)
+        }}
+      ).then(users => {
+        res.json(users);
+      })
+    }
   } catch (e) {
     console.log(e);
     res.status(502)
@@ -34,12 +46,13 @@ router.post('/', function(req, res, next) {
   try {
     prisma.reservation.create({
       data: {
-        dateReservation: req.body.dateReservation,
+        dateReservation: new Date(req.body.dateReservation),
         heureEntre: req.body.heureEntre,
         heureSortie: req.body.heureSortie,
         numPlaceParking: req.body.numPlaceParking,
-        codeQr: req.body.codeQr,
-        paye:req.body.paye
+        paye:req.body.paye,
+        idParking: req.body.idParking,
+        idCompte: req.body.idCompte
       }
     }).then(users => {
       res.json(users);

@@ -6,7 +6,21 @@ const prisma = new PrismaClient()
 
 router.get('/', function(req, res, next) {
     try {
-        prisma.parking.findMany().then(users => {
+        prisma.parking.findMany({
+            include:{
+                HistoriqueParking:{
+                    take:1,
+                    select:{
+                        nombrePlace:true,
+                    },
+                    orderBy: {
+                        idHistoriqueParking: 'desc',
+                      }
+                },
+                Horaire:{
+                }
+            }
+        }).then(users => {
             res.json(users);
         })
     } catch (e) {

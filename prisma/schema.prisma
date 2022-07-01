@@ -22,7 +22,7 @@ model Compte {
 
 model Noter {
   idNote           Int      @id @default(autoincrement())
-  note             Decimal
+  note             Int
   commentaire      String?
   compte           Compte?  @relation(fields: [compteIdCompte], references: [idCompte])
   parking          Parking? @relation(fields: [parkingIdParking], references: [idParking])
@@ -46,6 +46,7 @@ model Parking {
   Avoir          Avoir[]
   Horaire        Horaire[]
   HistoriqueParking   HistoriqueParking[]
+  Reservation Reservation[]
 }
 
 model HistoriqueParking {
@@ -58,6 +59,8 @@ model HistoriqueParking {
 
 model Reservation {
   numReservation  Int      @id @default(autoincrement())
+  parking                   Parking    @relation(fields: [parkingIdParking], references: [idParking])
+  parkingIdParking         Int
   dateReservation DateTime
   heureEntre      String
   heureSortie     String
